@@ -1,0 +1,31 @@
+
+<% layout("/layouts/boilerplate.ejs")%> <!--used the boilerplate code to make the syntax easier and smaller-->
+<body>
+    <h3>All Listings</h3>  <!--Heading-->
+    <!-- <form method="GET" action="/listings/new">     we do a GET request when we click the button and then we go to the site "/listings/new"-->
+        <!-- <button>Create New Listing</button>     button to create new listings
+     </form>  -->
+
+
+      <div class="row row-cols-lg-3 row-cols-md-3 row-cols-sm-2 row-cols-xl-3"> <!--adding style useing bootstrap styleing such as in large rows and cols will display 3 in a row , in small rows and cols will display 2 in a row ,etc-->
+        <% for(let listing of  allListings){ %>  <!--same for loop to create the cards according to the number of listings present -->
+            <!--basic card template copied from Bootstrap-->
+            <a href="/listings/<%=listing._id%>" class="listing-link"> <!--makeing all the cards a anchor tag which when clicked will open the "show.ejs file"-->
+         <div class="card cols" >
+            <img src="<%=listing.image%>" class="card-img-top" alt="listing_image" style="height: 20rem;"/> <!--to display the images according to the links--> <!--changed the display image height and made  them same-->
+            <div class="card-img-overlay"></div> <!--bootstrap styleing to write anything on the card -->
+            <div class="card-body">
+              <p class="card-text">
+                <b><%= listing.title %></b><br/> <!--to print the title and price in indian standards-->
+                    &#8377; <%=listing.price.toLocaleString("en-IN") %>/ night
+              </p>
+            </div>
+          </div>
+        </a>
+          <% } %> <!-- ending of for loop-->
+      </div>
+</body>
+
+
+
+    

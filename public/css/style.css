@@ -1,0 +1,109 @@
+ body{
+  font-family: "Plus Jakarta Sans", sans-serif !important;
+  font-optical-sizing: auto;
+  font-style: normal;
+  display :flex;        /* 3 lines including this line is for the footer to contract in the bottom and not to come in between the content*/
+  flex-direction: column;
+  min-height: 100vh;
+} 
+
+/* Boilerplate body */
+.container{  /* for the footer to contract in the bottom*/
+    flex :1 ;
+}
+
+
+/* Navbar */
+.navbar{ /* styleing the navbar */
+    height : 5rems;
+    background-color: white;
+}
+.fa-compass{ /* styleing the icon of compass */
+    color : #fe424d;
+    font-size :2rem;
+}
+
+.nav-link{  /* styleing the navbar options */
+      color : #222222 !important; /* here !important is written to override the bootstrap styleing */
+}
+
+/* Footer */
+.f-info-links a{ /* Styleing the footer links which are anchor tags  */
+    text-decoration: none;
+    color :#222222;
+    
+}
+.f-info-links a:hover{ /* creating hover effect in the footer links */
+    text-decoration: underline;
+}
+.f-info-links , .f-info-socials ,.f-info-brand { /* styleing footer links  , socialmedia links , and brand name */
+    width:100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+}
+.f-info-socials i{ /* styleing footer socialmedia links */
+    font-size: 1.2rem;
+    margin-right:1rem;
+}
+
+.f-info{ /* styleing the whole footer information */
+    text-align: center;
+    display : flex;
+    height : 8rem;
+    background-color: #ebebeb;
+    flex-wrap: wrap;
+    justify-content: center;
+
+}
+
+/* cards */
+
+.card{
+    border: none !important; /*remove the border and override the bootstrap styleing*/
+    margin-bottom: 2rem ;
+}
+
+.card-img-top{  /*styleing the card image */
+    border-radius: 1rem !important;
+    width: 100% !important ;
+    object-fit: cover !important;
+
+}
+.card-body{ /* styleing the body of the card body */
+    padding:0;
+}
+
+.card-text p{ /* styleing the title in the image */
+    font-weight: 400 !important;
+}
+
+.listing-link{ /* styleing the anchor tag of the image */
+    text-decoration: none;
+}
+
+/* Card Effect */
+
+.card-img-overlay{
+ opacity : 0;
+}
+
+.card-img-overlay:hover{
+    opacity: 0.2;
+    background-color: white;
+}
+
+/* Show Page*/
+.show-img{
+    height :30vh;
+}
+
+.btns{
+    display : flex;
+}
+
+.show-card{
+    padding-left: 0;
+    padding-left: 0;
+}
