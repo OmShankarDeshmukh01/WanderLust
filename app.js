@@ -5,6 +5,8 @@ const Listing = require("./models/listing.js");//required listing.js from models
 const path = require("path"); //require the path after requireing mongoose
 const methodOverride = require("method-override");//required method-override to use PUT and DELETE request
 const ejsMate = require("ejs-mate"); //requireing ejs-mate to get help in styleing 
+const wrapAsync = require("./utils/wrapAsync.js");//requireing wrapAsync function 
+const ExpressError = require("./utils/ExpressError.js");//requireing wrapAsync function 
 const port = 8080;  //defined a port
 
 
@@ -58,14 +60,14 @@ app.get("/listings/new" , (req,res)=>{ //to add new listings  (new input values 
 });
 
 //Show route
-app.get("/listings/:id" ,async(req ,res)=>{ //used to show the data after clicking the anchor tag which is the title.
+app.get("/listings/:id" ,wrapAsync (async(req ,res)=>{ //used to show the data after clicking the anchor tag which is the title.
     let {id} =req.params; //extracting the id from the request paramaters
     const listing = await Listing.findById(id); //searching the data on the basis of the id 
     res.render("./listings/show.ejs" , {listing}); //rendering the "show.ejs" file and passing the {listing} value in the show.ejs file to see in the site.
-});
+}));
 
 //Create route
-app.post("/listings" ,async (req , res,next)=>{ //creating a post request to add all the details inputted in "new.ejs" 
+app.post("/listings" ,wrapAsync(async (req , res,next)=>{ //creating a post request to add all the details inputted in "new.ejs" 
     try{
     let listing = req.body.listing; //NEW SYNTAX to get the listing values when we define field of objects.
     const newListing = await new Listing(listing); //Adding the value which is inputted by user in the Listing database.
@@ -76,34 +78,38 @@ app.post("/listings" ,async (req , res,next)=>{ //creating a post request to add
     catch(err){
         next(err);
     }
-});
+}));
 
 //Edit route
-app.get("/listings/:id/edit" ,async (req,res)=>{ //edit route is created to edit the given content
+app.get("/listings/:id/edit" ,wrapAsync (async (req,res)=>{ //edit route is created to edit the given content
     let {id} =req.params; //id has been extracted from the paramaters.
     const listing = await Listing.findById(id); //searching the data on the basis of the id 
     res.render("./listings/edit.ejs" , {listing}); //rendering the edit.ejs file to edit it in the realtime with the given value of listing in it
-});
+}));
 
 //Update route
-app.put("/listings/:id" , async (req , res)=>{ //update route with put request to put the values in the site after editing
+app.put("/listings/:id" ,wrapAsync( async (req , res)=>{ //update route with put request to put the values in the site after editing
     let {id} =req.params; //id has been extracted from the paramaters.
     await Listing.findByIdAndUpdate(id , {...req.body.listing});//here we are making changes in the database by useing the method "findByIdAndUpdate" and we are deconstructing the information from the body by using ...req.body.listing
     res.redirect(`/listings/${id}`); // updating the site and redirecting the site to show.ejs
-});
+}));
 
 //Delete route
-app.delete("/listings/:id" , async (req , res)=>{//delete route with delete request to delete the value of listings from the database.
+app.delete("/listings/:id" ,wrapAsync ( async (req , res)=>{//delete route with delete request to delete the value of listings from the database.
     let {id} =req.params; //id has been extracted from the paramaters.
     let deletedvalue = await Listing.findByIdAndDelete(id); //to find the value by id and delete from the database
     console.log(deletedvalue); //to get a temp idea on which data is deleted (inside the console)
     res.redirect("/listings"); //redirect to the main index route
-});
+}));
 
 app.use((err ,req ,res ,next)=>{
-    res.send("Something went wrong !");
+    let{statusCode , message} = err;
+    res.status(statusCode).send(message);
 });
 
+app.all("*" , (req ,res,next)=>{
+    next(new ExpressError(404 , "Page Not Found!"));
+});
 
 app.listen(port , ()=>{     //listing the port 8080 so that we can type "localhost:8080" in the web and can get the message in console that app is listenihng to port
     console.log("app is listening to port"); //to know that we are connected to loacl host we print it in the console
