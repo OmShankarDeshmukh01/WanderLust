@@ -7,6 +7,8 @@ const methodOverride = require("method-override");//required method-override to 
 const ejsMate = require("ejs-mate"); //requireing ejs-mate to get help in styleing 
 const wrapAsync = require("./utils/wrapAsync.js");//requireing wrapAsync function 
 const ExpressError = require("./utils/ExpressError.js");//requireing wrapAsync function 
+const {listingSchema} = require("./schema.js");
+
 const port = 8080;  //defined a port
 
 
@@ -48,6 +50,17 @@ app.get("/" , (req ,res)=>{   //basic route
 // });
 
 
+const ValidateListing = (req, res,next)=>{
+    let{error} = listingSchema.validate(req.body);
+    if(error){
+        let errMsg = error.details.map((el) => el.message).join(",");
+        throw new ExpressError(400 , result.error);
+    }
+    else{
+        next();
+    }
+};
+
 //Index route
 app.get("/listings" , async(req ,res)=>{ //making index route "/listing"
    const allListings =  await Listing.find({}); //saving all the data inside a const variable. 
@@ -67,12 +80,27 @@ app.get("/listings/:id" ,wrapAsync (async(req ,res)=>{ //used to show the data a
 }));
 
 //Create route
-app.post("/listings" ,wrapAsync(async (req , res,next)=>{ //creating a post request to add all the details inputted in "new.ejs"
-    if(!req.body.listing){
-        throw new ExpressError(400 , "send valid data for listing");
-    } 
+app.post("/listings" , ValidateListing , wrapAsync(async (req , res,next)=>{ //creating a post request to add all the details inputted in "new.ejs"
+    let result =listingSchema.validate(req.body);
+    console.log(result.error);
+    if(result.error)
+    {
+        throw new ExpressError(400 , result.error);
+    }
     let listing = req.body.listing; //NEW SYNTAX to get the listing values when we define field of objects.
     const newListing = await new Listing(listing); //Adding the value which is inputted by user in the Listing database.
+    // if(!newListing.title){
+    //     throw new ExpressError(400 , "Title is missing!");
+    // }
+    // if(!newListing.description){
+    //     throw new ExpressError(400 , "Description is missing!");
+    // }
+    // if(!newListing.location){
+    //     throw new ExpressError(400 , "Location is missing!");
+    // }
+    // if(!newListing.country){
+    //     throw new ExpressError(400 , "Country is missing!");
+    // }
     await newListing.save(); //saving the data permanently inside the database.
     res.redirect("/listings"); //redirecting the page to the index route to see the new addition in the site.
     // console.log(listing); //temp printing the value in the console to see what has to be printed.
@@ -80,16 +108,13 @@ app.post("/listings" ,wrapAsync(async (req , res,next)=>{ //creating a post requ
 
 //Edit route
 app.get("/listings/:id/edit" ,wrapAsync (async (req,res)=>{ //edit route is created to edit the given content
-    if(!req.body.listing){
-        throw new ExpressError(400 , "send valid data for listing");
-    }
     let {id} =req.params; //id has been extracted from the paramaters.
     const listing = await Listing.findById(id); //searching the data on the basis of the id 
     res.render("./listings/edit.ejs" , {listing}); //rendering the edit.ejs file to edit it in the realtime with the given value of listing in it
 }));
 
 //Update route
-app.put("/listings/:id" ,wrapAsync( async (req , res)=>{ //update route with put request to put the values in the site after editing
+app.put("/listings/:id" , ValidateListing , wrapAsync( async (req , res)=>{ //update route with put request to put the values in the site after editing
     let {id} =req.params; //id has been extracted from the paramaters.
     await Listing.findByIdAndUpdate(id , {...req.body.listing});//here we are making changes in the database by useing the method "findByIdAndUpdate" and we are deconstructing the information from the body by using ...req.body.listing
     res.redirect(`/listings/${id}`); // updating the site and redirecting the site to show.ejs
@@ -110,7 +135,7 @@ app.all("*" , (req ,res,next)=>{
 
 app.use((err ,req ,res ,next)=>{
     let{statusCode = 500 , message = "Something went wrong!"} = err;
-    res.status(statusCode).send(message);
+    res.status(statusCode).render("error.ejs" ,{err});
 });
 
 
