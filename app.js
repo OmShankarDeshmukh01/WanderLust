@@ -65,13 +65,18 @@ app.get("/listings/:id" ,async(req ,res)=>{ //used to show the data after clicki
 });
 
 //Create route
-app.post("/listings" ,async (req , res)=>{ //creating a post request to add all the details inputted in "new.ejs" 
+app.post("/listings" ,async (req , res,next)=>{ //creating a post request to add all the details inputted in "new.ejs" 
+    try{
     let listing = req.body.listing; //NEW SYNTAX to get the listing values when we define field of objects.
     const newListing = await new Listing(listing); //Adding the value which is inputted by user in the Listing database.
     await newListing.save(); //saving the data permanently inside the database.
     res.redirect("/listings"); //redirecting the page to the index route to see the new addition in the site.
     // console.log(listing); //temp printing the value in the console to see what has to be printed.
-})
+    }
+    catch(err){
+        next(err);
+    }
+});
 
 //Edit route
 app.get("/listings/:id/edit" ,async (req,res)=>{ //edit route is created to edit the given content
@@ -93,6 +98,10 @@ app.delete("/listings/:id" , async (req , res)=>{//delete route with delete requ
     let deletedvalue = await Listing.findByIdAndDelete(id); //to find the value by id and delete from the database
     console.log(deletedvalue); //to get a temp idea on which data is deleted (inside the console)
     res.redirect("/listings"); //redirect to the main index route
+});
+
+app.use((err ,req ,res ,next)=>{
+    res.send("Something went wrong !");
 });
 
 

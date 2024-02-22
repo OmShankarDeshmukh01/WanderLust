@@ -5,32 +5,51 @@
         <br/><br/>
     <h3>Edit your listing :</h3><!--basic heading-->
     <!--we are creating all the name a field of object "listings" is an object and title is a field in it-->
-    <form method="POST" action="/listings/<%=listing._id%>?_method=PUT"><!--this is a PUT request because it will edit the value in the site  but we are writeing POST because we can either write POST or GET request "to get PUT request we have to do npm i method-override package and the int the action button write"_method=PUT""-->
+    <form method="POST" action="/listings/<%=listing._id%>?_method=PUT"novalidate class="needs-validation"><!--this is a PUT request because it will edit the value in the site  but we are writeing POST because we can either write POST or GET request "to get PUT request we have to do npm i method-override package and the int the action button write"_method=PUT""-->
+        
         <div class="mb-3">
             <lable for-="title" class="form-lable">Title</lable>
-            <input name ="listing[title]" value="<%=listing.title%>" type="text" class="form-control"/><!--value in given so that when we edit the site then previous value is also visible in which er can make changes-->
+            <input name ="listing[title]" value="<%=listing.title%>" type="text" class="form-control" required/><!--value in given so that when we edit the site then previous value is also visible in which er can make changes-->
+            <div class="invalid-feedback">
+                Please enter a Title
+              </div>
         </div>
         <div class="mb-3">
             <lable for-="description" class="form-lable">Description</lable>
-            <textarea name ="listing[description]" type="text" class="form-control"><%=listing.description%></textarea>
+            <textarea name ="listing[description]" type="text" class="form-control"required><%=listing.description%></textarea>
+            <div class="invalid-feedback">
+                Please enter a Description
+              </div>
         </div>
         <div class="mb-3">
             <lable for-="image" class="form-lable">Image URL</lable>
-            <input name ="listing[image]" value="<%=listing.image%>" type="text" class="form-control"/>
+            <input name ="listing[image]" value="<%=listing.image%>" type="text" class="form-control"required/>
+            <div class="invalid-feedback">
+                Please enter a Image URL
+              </div>
         </div>
         <div class="row">
         <div class="mb-3 col-md-4">
             <lable for-="price" class="form-lable">Price</lable>
-            <input name ="listing[price]" value="<%=listing.price%>" type="number" class="form-control"/>
+            <input name ="listing[price]" value="<%=listing.price%>" type="number" class="form-control"required/>
+            <div class="invalid-feedback">
+                Please enter a Price
+              </div>
         </div>
         <div class="mb-3 col-md-8">
             <lable for-="country" class="form-lable">Country</lable>
-            <input name ="listing[country]" value="<%=listing.country%>" type="text" class="form-control"/>
+            <input name ="listing[country]" value="<%=listing.country%>" type="text" class="form-control"required/>
+            <div class="invalid-feedback">
+                Please enter a Country 
+              </div>
         </div>
     </div>
         <div class="mb-3">
             <lable for-="location" class="form-lable">Location</lable>
-            <input name ="listing[location]" value="<%=listing.location%>" type="text" class="form-control"/>
+            <input name ="listing[location]" value="<%=listing.location%>" type="text" class="form-control"required/>
+            <div class="invalid-feedback">
+                Please enter a Location 
+              </div>
         </div>
        <br/><br/>
         <button class="btn btn-danger">Edit</button>
