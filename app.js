@@ -67,21 +67,22 @@ app.get("/listings/:id" ,wrapAsync (async(req ,res)=>{ //used to show the data a
 }));
 
 //Create route
-app.post("/listings" ,wrapAsync(async (req , res,next)=>{ //creating a post request to add all the details inputted in "new.ejs" 
-    try{
+app.post("/listings" ,wrapAsync(async (req , res,next)=>{ //creating a post request to add all the details inputted in "new.ejs"
+    if(!req.body.listing){
+        throw new ExpressError(400 , "send valid data for listing");
+    } 
     let listing = req.body.listing; //NEW SYNTAX to get the listing values when we define field of objects.
     const newListing = await new Listing(listing); //Adding the value which is inputted by user in the Listing database.
     await newListing.save(); //saving the data permanently inside the database.
     res.redirect("/listings"); //redirecting the page to the index route to see the new addition in the site.
     // console.log(listing); //temp printing the value in the console to see what has to be printed.
-    }
-    catch(err){
-        next(err);
-    }
 }));
 
 //Edit route
 app.get("/listings/:id/edit" ,wrapAsync (async (req,res)=>{ //edit route is created to edit the given content
+    if(!req.body.listing){
+        throw new ExpressError(400 , "send valid data for listing");
+    }
     let {id} =req.params; //id has been extracted from the paramaters.
     const listing = await Listing.findById(id); //searching the data on the basis of the id 
     res.render("./listings/edit.ejs" , {listing}); //rendering the edit.ejs file to edit it in the realtime with the given value of listing in it
@@ -102,14 +103,17 @@ app.delete("/listings/:id" ,wrapAsync ( async (req , res)=>{//delete route with 
     res.redirect("/listings"); //redirect to the main index route
 }));
 
-app.use((err ,req ,res ,next)=>{
-    let{statusCode , message} = err;
-    res.status(statusCode).send(message);
-});
 
 app.all("*" , (req ,res,next)=>{
     next(new ExpressError(404 , "Page Not Found!"));
 });
+
+app.use((err ,req ,res ,next)=>{
+    let{statusCode = 500 , message = "Something went wrong!"} = err;
+    res.status(statusCode).send(message);
+});
+
+
 
 app.listen(port , ()=>{     //listing the port 8080 so that we can type "localhost:8080" in the web and can get the message in console that app is listenihng to port
     console.log("app is listening to port"); //to know that we are connected to loacl host we print it in the console
