@@ -18,6 +18,12 @@ const listingSchema = new Schema({ //listing a Schema (basic way to assign opera
     price : Number,
     location : String,
     country :String,
+    revioews : [
+        {
+            type : Schema.Types.ObjectId, //object id of review
+            ref : "Review"
+        }
+    ]
 });
 const Listing = mongoose.model("Listing" , listingSchema); //list it inside a model
 module.exports = Listing; //export the modules
