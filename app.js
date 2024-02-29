@@ -7,8 +7,8 @@ const methodOverride = require("method-override");//required method-override to 
 const ejsMate = require("ejs-mate"); //requireing ejs-mate to get help in styleing 
 const wrapAsync = require("./utils/wrapAsync.js");//requireing wrapAsync function 
 const ExpressError = require("./utils/ExpressError.js");//requireing wrapAsync function 
-const {listingSchema} = require("./schema.js");
-
+const {listingSchema , reviewSchema} = require("./schema.js");
+const Review = require("./models/review.js"); //required review.js from models folder
 const port = 8080;  //defined a port
 
 
@@ -50,8 +50,18 @@ app.get("/" , (req ,res)=>{   //basic route
 // });
 
 
-const ValidateListing = (req, res,next)=>{
+const ValidateListing = (req, res,next)=>{ //very useful function used to check from the schema.js file that the user input is correct or not
     let{error} = listingSchema.validate(req.body);
+    if(error){
+        let errMsg = error.details.map((el) => el.message).join(",");
+        throw new ExpressError(400 , result.error);
+    }
+    else{
+        next();
+    }
+};
+const ValidateReview = (req, res,next)=>{ //very useful function used to check from the schema.js file that the user input is correct or not
+    let{error} = reviewSchema.validate(req.body);
     if(error){
         let errMsg = error.details.map((el) => el.message).join(",");
         throw new ExpressError(400 , result.error);
@@ -126,6 +136,22 @@ app.delete("/listings/:id" ,wrapAsync ( async (req , res)=>{//delete route with 
     let deletedvalue = await Listing.findByIdAndDelete(id); //to find the value by id and delete from the database
     console.log(deletedvalue); //to get a temp idea on which data is deleted (inside the console)
     res.redirect("/listings"); //redirect to the main index route
+}));
+ 
+//Review route
+//post route
+app.post("/listings/:id/reviews" ,ValidateReview, wrapAsync( async(req ,res)=>{
+   let listing = await Listing.findById(req.params.id); //get the id from body
+   let newReview = new Review(req.body.review);
+
+   listing.reviews.push(newReview); //access reviews array from listing.js     //here we push new review in this array
+
+   await newReview.save();
+   await listing.save();
+
+//    console.log("new review saved");
+//    res.send("new review saved");
+   res.redirect(`/listings/${listing._id}`)//redirect to this route
 }));
 
 

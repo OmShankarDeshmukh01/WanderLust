@@ -18,7 +18,7 @@ const listingSchema = new Schema({ //listing a Schema (basic way to assign opera
     price : Number,
     location : String,
     country :String,
-    revioews : [
+    reviews : [
         {
             type : Schema.Types.ObjectId, //object id of review
             ref : "Review"
