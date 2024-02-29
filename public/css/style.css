@@ -60,7 +60,7 @@
 
 /* cards */
 
-.card{
+.listing-card{
     border: none !important; /*remove the border and override the bootstrap styleing*/
     margin-bottom: 2rem ;
 }

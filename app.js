@@ -85,7 +85,7 @@ app.get("/listings/new" , (req,res)=>{ //to add new listings  (new input values 
 //Show route
 app.get("/listings/:id" ,wrapAsync (async(req ,res)=>{ //used to show the data after clicking the anchor tag which is the title.
     let {id} =req.params; //extracting the id from the request paramaters
-    const listing = await Listing.findById(id); //searching the data on the basis of the id 
+    const listing = await Listing.findById(id).populate("reviews"); //searching the data on the basis of the id  //p;opulate is used to print all the data in show.ejs of reviews
     res.render("./listings/show.ejs" , {listing}); //rendering the "show.ejs" file and passing the {listing} value in the show.ejs file to see in the site.
 }));
 
@@ -152,6 +152,15 @@ app.post("/listings/:id/reviews" ,ValidateReview, wrapAsync( async(req ,res)=>{
 //    console.log("new review saved");
 //    res.send("new review saved");
    res.redirect(`/listings/${listing._id}`)//redirect to this route
+}));
+
+//review delete route
+app.delete("/listings/:id/review/:reviewId" , wrapAsync(async(req ,res)=>{
+    let{ id , reviewId } = req.params;
+    await Listing.findByIdAndUpdate(id , {$pull : {review : reviewId}}); //$pull finds the id from the review and matches it if the id matcher than it updates the value
+    const del  = await Review.findByIdAndDelete(reviewId);
+    console.log( del);
+    res.redirect(`/listings/${id}`);
 }));
 
 

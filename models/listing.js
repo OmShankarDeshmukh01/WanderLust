@@ -1,5 +1,6 @@
 const mongoose = require("mongoose"); //require mongoose
 const Schema = mongoose.Schema;   //stored mongoose schema inside a constant variable so that we do not have to do it everytime
+const Review = require("./review.js");
 
 const listingSchema = new Schema({ //listing a Schema (basic way to assign operators)
     title : {
@@ -24,6 +25,13 @@ const listingSchema = new Schema({ //listing a Schema (basic way to assign opera
             ref : "Review"
         }
     ]
+});
+
+listingSchema .post("findOneAndDelete", async(listing)=>{
+    if(listing){
+        await Review.deleteMany({reviews : {$in : listing.reviews}});
+    }
+    
 });
 const Listing = mongoose.model("Listing" , listingSchema); //list it inside a model
 module.exports = Listing; //export the modules
