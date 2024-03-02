@@ -6,11 +6,9 @@ const path = require("path"); //require the path after requireing mongoose
 const methodOverride = require("method-override");//required method-override to use PUT and DELETE request
 const ejsMate = require("ejs-mate"); //requireing ejs-mate to get help in styleing 
 const ExpressError = require("./utils/ExpressError.js");//requireing wrapAsync function 
-
 const listings = require("./routes/listing.js");//required all the /listing routes from  routes folder and listing.js file
 const reviews = require("./routes/review.js");//required all the reviews from review.js
-
-const port = 8080;  //defined a port
+const port = 8080;  //defined a port //
 
 
 //this code in written to establish the connection between the database and server
