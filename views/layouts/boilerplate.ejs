@@ -18,7 +18,10 @@
     <%- include("../includes/navbar.ejs") %> <!--including navbar to this files-->
 
 
-    <div class="container"><%- body %></div> <!--importing the body from other files-->
+    <div class="container">
+        <%- include("../includes/flash.ejs") %>
+        <%- body %>
+    </div> <!--importing the body from other files-->
 
 
     <%- include("../includes/footer.ejs") %>

@@ -36,7 +36,8 @@ router.get("/" , async(req ,res)=>{ //making index route "/listings"
  //Show route
  router.get("/:id" ,wrapAsync (async(req ,res)=>{ //used to show the data after clicking the anchor tag which is the title.
      let {id} =req.params; //extracting the id from the request paramaters
-     const listing = await Listing.findById(id).populate("reviews"); //searching the data on the basis of the id  //p;opulate is used to print all the data in show.ejs of reviews
+     const listing = await Listing.findById(id).populate("reviews"); //searching the data on the basis of the id  //populate is used to print all the data in show.ejs of reviews
+     if(!listing)
      res.render("./listings/show.ejs" , {listing}); //rendering the "show.ejs" file and passing the {listing} value in the show.ejs file to see in the site.
  }));
  
@@ -50,18 +51,7 @@ router.get("/" , async(req ,res)=>{ //making index route "/listings"
      }
      let listing = req.body.listing; //NEW SYNTAX to get the listing values when we define field of objects.
      const newListing = await new Listing(listing); //Adding the value which is inputted by user in the Listing database.
-     // if(!newListing.title){
-     //     throw new ExpressError(400 , "Title is missing!");
-     // }
-     // if(!newListing.description){
-     //     throw new ExpressError(400 , "Description is missing!");
-     // }
-     // if(!newListing.location){
-     //     throw new ExpressError(400 , "Location is missing!");
-     // }
-     // if(!newListing.country){
-     //     throw new ExpressError(400 , "Country is missing!");
-     // }
+     req.flash("success" , "New Listing Created!");//flashing msg on success
      await newListing.save(); //saving the data permanently inside the database.
      res.redirect("/listings"); //redirecting the page to the index route to see the new addition in the site.
      // console.log(listing); //temp printing the value in the console to see what has to be printed.
@@ -78,6 +68,7 @@ router.get("/" , async(req ,res)=>{ //making index route "/listings"
  router.put("/:id" , ValidateListing , wrapAsync( async (req , res)=>{ //update route with put request to put the values in the site after editing
      let {id} =req.params; //id has been extracted from the paramaters.
      await Listing.findByIdAndUpdate(id , {...req.body.listing});//here we are making changes in the database by useing the method "findByIdAndUpdate" and we are deconstructing the information from the body by using ...req.body.listing
+     req.flash("success" , " Listing Updated Successfully!");
      res.redirect(`/listings/${id}`); // updating the site and redirecting the site to show.ejs
  }));
  
@@ -85,6 +76,7 @@ router.get("/" , async(req ,res)=>{ //making index route "/listings"
  router.delete("/:id" ,wrapAsync ( async (req , res)=>{//delete route with delete request to delete the value of listings from the database.
      let {id} =req.params; //id has been extracted from the paramaters.
      let deletedvalue = await Listing.findByIdAndDelete(id); //to find the value by id and delete from the database
+     req.flash("success" , " Listing Deleted Successfully!");
      console.log(deletedvalue); //to get a temp idea on which data is deleted (inside the console)
      res.redirect("/listings"); //redirect to the main index route
  }));

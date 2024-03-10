@@ -8,6 +8,8 @@ const ejsMate = require("ejs-mate"); //requireing ejs-mate to get help in stylei
 const ExpressError = require("./utils/ExpressError.js");//requireing wrapAsync function 
 const listings = require("./routes/listing.js");//required all the /listing routes from  routes folder and listing.js file
 const reviews = require("./routes/review.js");//required all the reviews from review.js
+const session = require("express-session");
+const flash = require("connect-flash");
 const port = 8080;  //defined a port //
 
 
@@ -29,24 +31,32 @@ app.use(methodOverride("_method"));//we will use this "_method" to write PUT and
 app.engine("ejs" , ejsMate); //essential to run ejs-mate
 app.use(express.static(path.join(__dirname , "/public"))); //using static files such as css and javascript codes....
 
-
+const sessionOptions = {
+    secret : "mysupersecretcode",
+    resave : false , 
+    saveUninitialized : true,
+    cookie : {
+        expires : Date.now() + 7 * 24 * 60 * 60 * 1000,
+        maxAge : 7 * 24 * 60 * 60 * 1000,
+        httpOnlt : true,
+    },
+};
 
 app.get("/" , (req ,res)=>{   //basic route
     res.send("hii i am root"); //response which we will see on the site
 });
 
-// app.get("/testlisting" , async (req , res)=>{ //testing route
-//     let samplelisting =new Listing({ //inputing sample data 
-//         title : "My New Villa",
-//         description : "By the beach",
-//         price : 1200 ,
-//         location :"Calangute, Goa",
-//         country : "India",
-//     });
-//     await samplelisting.save(); //saving the sample
-//     console.log("Sample was saved"); //sending a positive signal in the console
-//     res.send("succesfull testing"); //sending a positive response to the browser
-// });
+
+app.use(session(sessionOptions));
+//we should use flash always before the routes because we will use flash with the help of routes
+app.use(flash());
+
+//middleware
+app.use((req , res , next) =>{
+    res.locals.success = req.flash("success");
+    next();
+})
+
 
 //this single line requires all the listing route from the routes folder
 app.use("/listings" , listings); //write the common path which was deleted

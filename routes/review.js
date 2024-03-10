@@ -28,7 +28,7 @@ router.post("/" ,ValidateReview, wrapAsync( async(req ,res)=>{
     let newReview = new Review(req.body.review);
  
     listing.reviews.push(newReview); //access reviews array from listing.js     //here we push new review in this array
- 
+    req.flash("success" , "New Review Created!");
     await newReview.save();
     await listing.save();
  
@@ -42,6 +42,7 @@ router.post("/" ,ValidateReview, wrapAsync( async(req ,res)=>{
      let{ id , reviewId } = req.params;
      await Listing.findByIdAndUpdate(id , {$pull : {review : reviewId}}); //$pull finds the id from the review and matches it if the id matcher than it updates the value
      const del  = await Review.findByIdAndDelete(reviewId);
+     req.flash("success" , "Review Deleted Successfully!");
      console.log( del);
      res.redirect(`/listings/${id}`);
  }));

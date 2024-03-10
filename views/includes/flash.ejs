@@ -1,0 +1,10 @@
+
+<!--success is an array so we check if success exists and length of success is > 0-->
+<%  if(success && success.length){ %> <!--if success exists then only show this div else do not show-->
+    <div class="alert alert-success alert-dismissible fade show col-6 offset-3" role="alert">
+        <!--first we created a flash and then we took the flash to Create route and then created a middleware to extract the success msg from the locals and now we are printing the msg that NEW LISTING CREATED    < % = success % >-->
+        <%= success %>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+<% } %>
+
