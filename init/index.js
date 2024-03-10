@@ -1,7 +1,7 @@
 //here we will write all the code of initialization for "data.js" file
 
 const mongoose = require("mongoose");  //required mongoosh
-const initData = require("./data.js");  //required the data.js file in which all the data ins being downloaded from internet
+const initData2 = require("./data.js");  //required the data.js file in which all the data ins being downloaded from internet
 const Listing = require("../models/listing.js"); //require listing.js 
 
 //this code in written to establish the connection between the database and server
@@ -16,9 +16,9 @@ async function main() {
 }
 
 const initDB = async () =>{ //creating an async function to surf inside database data. 
-    await Listing.deleteMany({}); //first we will empty all the data which was present earlier
-    await Listing.insertMany(initData.data); //inserting all the data from the data.js file which is required in intiData variable
-    console.log("data was initialized"); //to know that all the data in data.ejs have been initialized in the database we write this command to get our answer in console as a hint
+  await Listing.deleteMany({}); //first we will empty all the data which was present earlier
+  await Listing.insertMany(initData2.data); //inserting all the data from the data.js file which is required in intiData variable
+  console.log("data was initialized"); //to know that all the data in data.ejs have been initialized in the database we write this command to get our answer in console as a hint
 
 };
 initDB(); //calling the initDB function

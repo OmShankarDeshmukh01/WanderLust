@@ -25,7 +25,7 @@ const ValidateListing = (req, res,next)=>{ //very useful function used to check 
 //Index route
 router.get("/" , async(req ,res)=>{ //making index route "/listings"
     const allListings =  await Listing.find({}); //saving all the data inside a const variable. 
-    res.render("./listings/index.ejs" , {allListings}); //rendering the index.js file for the "/listings" route
+    res.render("./listings/index.ejs" , {allListings} ); //rendering the index.js file for the "/listings" route
  });
  
  //New route     
@@ -37,7 +37,11 @@ router.get("/" , async(req ,res)=>{ //making index route "/listings"
  router.get("/:id" ,wrapAsync (async(req ,res)=>{ //used to show the data after clicking the anchor tag which is the title.
      let {id} =req.params; //extracting the id from the request paramaters
      const listing = await Listing.findById(id).populate("reviews"); //searching the data on the basis of the id  //populate is used to print all the data in show.ejs of reviews
-     if(!listing)
+     //if listing doesnot exits then print this error and redirect to /listings
+     if(!listing){
+        req.flash("error" , "Listing you requested for does not exist !");
+        res.redirect("/listings");
+     }
      res.render("./listings/show.ejs" , {listing}); //rendering the "show.ejs" file and passing the {listing} value in the show.ejs file to see in the site.
  }));
  
@@ -61,6 +65,11 @@ router.get("/" , async(req ,res)=>{ //making index route "/listings"
  router.get("/:id/edit" ,wrapAsync (async (req,res)=>{ //edit route is created to edit the given content
      let {id} =req.params; //id has been extracted from the paramaters.
      const listing = await Listing.findById(id); //searching the data on the basis of the id 
+     //if the listing doesnot exits then print this error does not go to the edit page if user goes to /edit and redirect to /listings
+     if(!listing){
+        req.flash("error" , "Listing you requested for does not exist !");
+        res.redirect("/listings");
+     }
      res.render("./listings/edit.ejs" , {listing}); //rendering the edit.ejs file to edit it in the realtime with the given value of listing in it
  }));
  

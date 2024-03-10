@@ -53,7 +53,10 @@ app.use(flash());
 
 //middleware
 app.use((req , res , next) =>{
+    //stored success msg
     res.locals.success = req.flash("success");
+    //stored error msg
+    res.locals.error = req.flash("error");
     next();
 })
 

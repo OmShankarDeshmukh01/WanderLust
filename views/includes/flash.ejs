@@ -8,3 +8,13 @@
       </div>
 <% } %>
 
+
+<!--error is an array so we check if error exists and length of error is > 0-->
+<%  if(error && error.length){ %> <!--if error exists then only show this div else do not show-->
+    <div class="alert alert-danger alert-dismissible fade show col-6 offset-3" role="alert">
+        <!--first we created a flash and then we took the flash to Create route and then created a middleware to extract the error msg from the locals and now we are printing the msg that NEW LISTING CREATED    < % = error % >-->
+        <%= error %>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+<% } %>
+
