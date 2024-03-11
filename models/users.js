@@ -11,6 +11,6 @@ const userSchema = new Schema({ //defined a new user schema
 });
 
 //used this plugin as per the documentation on npm
-User.plugin(passportLocalMongoose);
+userSchema.plugin(passportLocalMongoose);
 
 module.exports = mongoose.model('User', userSchema);

@@ -70,7 +70,18 @@ app.use((req , res , next) =>{
     //stored error msg
     res.locals.error = req.flash("error");
     next();
-})
+});
+
+//making a demo user to check how the user auth works
+app.get("/demouser" , async(req ,res)=>{
+    let fakeuser = new User({
+        email : "demo@gmail.com",
+        username : "demo_user"
+    });
+
+    let registereduser = await User.register(fakeuser , "123user");
+    res.send(registereduser);
+});
 
 
 //this single line requires all the listing route from the routes folder
