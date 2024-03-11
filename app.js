@@ -10,6 +10,7 @@ const listings = require("./routes/listing.js");//required all the /listing rout
 const reviews = require("./routes/review.js");//required all the reviews from review.js
 const session = require("express-session");
 const flash = require("connect-flash");
+const passport = require("passport");
 const port = 8080;  //defined a port //
 
 
