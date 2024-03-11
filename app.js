@@ -13,8 +13,9 @@ const LocalStrategy = require("passport-local");
 const User = require("./models/users.js");
 const port = 8080;  //defined a port //
 
-const listings = require("./routes/listing.js");//required all the /listing routes from  routes folder and listing.js file
-const reviews = require("./routes/review.js");//required all the reviews from review.js
+const listingRouter = require("./routes/listing.js");//required all the /listing routes from  routes folder and listing.js file
+const reviewRouter = require("./routes/review.js");//required all the reviews from review.js
+const userRouter = require("./routes/user.js");
 
 //this code in written to establish the connection between the database and server
 main().then((res)=>{  // this .then function  was not in the mongoose QuickStart we added it to get a message that we are connected to the Database
@@ -85,9 +86,11 @@ app.get("/demouser" , async(req ,res)=>{
 
 
 //this single line requires all the listing route from the routes folder
-app.use("/listings" , listings); //write the common path which was deleted
+app.use("/listings" , listingRouter); //write the common path which was deleted
 
-app.use("/listings/:id/reviews" , reviews);
+app.use("/listings/:id/reviews" , reviewRouter);
+
+app.use("/" , userRouter);
 
 app.all("*" , (err , req ,res,next)=>{
     console.log(err);
