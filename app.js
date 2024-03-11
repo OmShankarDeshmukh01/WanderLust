@@ -6,13 +6,15 @@ const path = require("path"); //require the path after requireing mongoose
 const methodOverride = require("method-override");//required method-override to use PUT and DELETE request
 const ejsMate = require("ejs-mate"); //requireing ejs-mate to get help in styleing 
 const ExpressError = require("./utils/ExpressError.js");//requireing wrapAsync function 
-const listings = require("./routes/listing.js");//required all the /listing routes from  routes folder and listing.js file
-const reviews = require("./routes/review.js");//required all the reviews from review.js
 const session = require("express-session");
 const flash = require("connect-flash");
 const passport = require("passport");
+const LocalStrategy = require("passport-local");
+const User = require("./models/users.js");
 const port = 8080;  //defined a port //
 
+const listings = require("./routes/listing.js");//required all the /listing routes from  routes folder and listing.js file
+const reviews = require("./routes/review.js");//required all the reviews from review.js
 
 //this code in written to establish the connection between the database and server
 main().then((res)=>{  // this .then function  was not in the mongoose QuickStart we added it to get a message that we are connected to the Database
@@ -51,6 +53,15 @@ app.get("/" , (req ,res)=>{   //basic route
 app.use(session(sessionOptions));
 //we should use flash always before the routes because we will use flash with the help of routes
 app.use(flash());
+
+//passport will intiialize for every request
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new LocalStrategy(User.authenticate()));
+ //copied from npm
+passport.serializeUser(User.serializeUser()); //line is used to serialize the user
+passport.deserializeUser(User.deserializeUser());//line is used to deserialize the user
+
 
 //middleware
 app.use((req , res , next) =>{
