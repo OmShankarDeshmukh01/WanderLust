@@ -13,9 +13,14 @@ router.post("/signup" , wrapAsync(async(req ,res)=>{  //async function because w
         let  {username , email , password} = req.body; //extracting username password and email  from user input
     const newUser = new User({email , username}); //creating new user from the extracted data
     const registerdUser = await User.register(newUser , password);
-    console.log(registerdUser);
-    req.flash("success" , "User registered sucessfully");
-    res.redirect("/listings");
+    req.login(registerdUser , (err)=>{  //.login is used to directly login the user after signup
+        if(err){
+            next();
+        }
+        req.flash("success" , "User registered sucessfully");
+        res.redirect("/listings");
+    })
+
     } catch(e){
         req.flash("error" , e.message);
         res.redirect("/signup");
@@ -38,7 +43,7 @@ router.post("/login" ,passport.authenticate('local'  ,{failureRedirect : "/login
 
 //logout user
 router.get("/logout" , async(req ,res ,next)=>{
-    req.logout((err)=>{  //error wil store in this callback if error occurs during logout
+    req.logout((err)=>{  //.log is used to clear the login details     //error wil store in this callback if error occurs during logout
         if(err){ //if error occurs then flash the message
           return  next(err);
         }

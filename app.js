@@ -64,12 +64,14 @@ passport.serializeUser(User.serializeUser()); //line is used to serialize the us
 passport.deserializeUser(User.deserializeUser());//line is used to deserialize the user
 
 
-//middleware
+//middleware to define locals so that we can use them in ejs files
 app.use((req , res , next) =>{
     //stored success msg
     res.locals.success = req.flash("success");
     //stored error msg
     res.locals.error = req.flash("error");
+    //info related the user whose session is running
+    res.locals.currUser = req.user; //currUser is the name 
     next();
 });
 
