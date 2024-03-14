@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router(); //getting the router object  //setting the mergerParams to true so that we can merge id values with app.js
 const User = require("../models/users.js");
 const wrapAsync = require("../utils/wrapAsync");
+const passport = require("passport");
 
 router.get("/signup" , (req ,res)=>{
     res.render("users/signup.ejs");
@@ -27,5 +28,11 @@ router.get("/login" , (req ,res)=>{
 
 });
 
+
+//user authentication is going on (very important)
+router.post("/login" ,passport.authenticate('local'  ,{failureRedirect : "/login" , failureFlash : true } ) , async(req ,res)=>{  //passport.authenticate() is used to authonticate
+    req.flash("success" , "Welcome to Wanderlust you are logged in!");
+    res.redirect("/listings");
+});
 
 module.exports = router;

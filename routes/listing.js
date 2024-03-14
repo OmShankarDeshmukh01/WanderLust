@@ -30,6 +30,10 @@ router.get("/" , async(req ,res)=>{ //making index route "/listings"
  
  //New route     
  router.get("/new" , (req,res)=>{ //to add new listings  (new input values such as title , imageURL ,description,etc)
+    if(!req.isAuthenticated()){  //checking if the user is logged in before createing listing
+        req.flash("error" , "login to create new listings" );
+       return res.redirect("/login");
+    }
      res.render("./listings/new.ejs");   //rendering the "new.ejs" file because it contains the form in which we will input data for edit
  });
  
