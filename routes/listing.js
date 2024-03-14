@@ -6,7 +6,7 @@ const Listing = require("../models/listing.js");//required listing.js from model
 const wrapAsync = require("../utils/wrapAsync.js");//requireing wrapAsync function
 const ExpressError = require("../utils/ExpressError.js");//requireing wrapAsync function 
 const {listingSchema} = require("../schema.js");//required the file  which looks after that we have inputted correct value or not 
-
+const {isloggedIn} = require("../middleware.js"); //required the created middleware
 
 
 //copying all the /listing routes from app.js file
@@ -29,11 +29,7 @@ router.get("/" , async(req ,res)=>{ //making index route "/listings"
  });
  
  //New route     
- router.get("/new" , (req,res)=>{ //to add new listings  (new input values such as title , imageURL ,description,etc)
-    if(!req.isAuthenticated()){  //checking if the user is logged in before createing listing
-        req.flash("error" , "login to create new listings" );
-       return res.redirect("/login");
-    }
+ router.get("/new" ,isloggedIn, (req,res)=>{ //to add new listings  (new input values such as title , imageURL ,description,etc)         //passed the is loggedin middleware in the middle
      res.render("./listings/new.ejs");   //rendering the "new.ejs" file because it contains the form in which we will input data for edit
  });
  
@@ -50,7 +46,7 @@ router.get("/" , async(req ,res)=>{ //making index route "/listings"
  }));
  
  //Create route
- router.post("/" , ValidateListing , wrapAsync(async (req , res,next)=>{ //creating a post request to add all the details inputted in "new.ejs"
+ router.post("/" , ValidateListing ,isloggedIn , wrapAsync(async (req , res,next)=>{ //creating a post request to add all the details inputted in "new.ejs"
      let result =listingSchema.validate(req.body);
      console.log(result.error);
      if(result.error)
@@ -66,7 +62,7 @@ router.get("/" , async(req ,res)=>{ //making index route "/listings"
  }));
  
  //Edit route
- router.get("/:id/edit" ,wrapAsync (async (req,res)=>{ //edit route is created to edit the given content
+ router.get("/:id/edit" ,isloggedIn,wrapAsync (async (req,res)=>{ //edit route is created to edit the given content
      let {id} =req.params; //id has been extracted from the paramaters.
      const listing = await Listing.findById(id); //searching the data on the basis of the id 
      //if the listing doesnot exits then print this error does not go to the edit page if user goes to /edit and redirect to /listings
@@ -78,7 +74,7 @@ router.get("/" , async(req ,res)=>{ //making index route "/listings"
  }));
  
  //Update route
- router.put("/:id" , ValidateListing , wrapAsync( async (req , res)=>{ //update route with put request to put the values in the site after editing
+ router.put("/:id" , ValidateListing ,isloggedIn, wrapAsync( async (req , res)=>{ //update route with put request to put the values in the site after editing
      let {id} =req.params; //id has been extracted from the paramaters.
      await Listing.findByIdAndUpdate(id , {...req.body.listing});//here we are making changes in the database by useing the method "findByIdAndUpdate" and we are deconstructing the information from the body by using ...req.body.listing
      req.flash("success" , " Listing Updated Successfully!");
@@ -86,7 +82,7 @@ router.get("/" , async(req ,res)=>{ //making index route "/listings"
  }));
  
  //Delete route
- router.delete("/:id" ,wrapAsync ( async (req , res)=>{//delete route with delete request to delete the value of listings from the database.
+ router.delete("/:id" ,isloggedIn , wrapAsync ( async (req , res)=>{//delete route with delete request to delete the value of listings from the database.
      let {id} =req.params; //id has been extracted from the paramaters.
      let deletedvalue = await Listing.findByIdAndDelete(id); //to find the value by id and delete from the database
      req.flash("success" , " Listing Deleted Successfully!");

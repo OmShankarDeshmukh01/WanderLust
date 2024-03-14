@@ -35,4 +35,16 @@ router.post("/login" ,passport.authenticate('local'  ,{failureRedirect : "/login
     res.redirect("/listings");
 });
 
+
+//logout user
+router.get("/logout" , async(req ,res ,next)=>{
+    req.logout((err)=>{  //error wil store in this callback if error occurs during logout
+        if(err){ //if error occurs then flash the message
+          return  next(err);
+        }
+        req.flash("success" , "You are logged out successfully");
+        res.redirect("/listings");
+    })
+})
+
 module.exports = router;
