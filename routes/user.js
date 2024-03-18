@@ -3,6 +3,7 @@ const router = express.Router(); //getting the router object  //setting the merg
 const User = require("../models/users.js");
 const wrapAsync = require("../utils/wrapAsync");
 const passport = require("passport");
+const {saveRedirectUrl} = require("../middleware.js");
 
 router.get("/signup" , (req ,res)=>{
     res.render("users/signup.ejs");
@@ -35,9 +36,10 @@ router.get("/login" , (req ,res)=>{
 
 
 //user authentication is going on (very important)
-router.post("/login" ,passport.authenticate('local'  ,{failureRedirect : "/login" , failureFlash : true } ) , async(req ,res)=>{  //passport.authenticate() is used to authonticate
+router.post("/login",saveRedirectUrl ,passport.authenticate('local'  ,{failureRedirect : "/login" , failureFlash : true } ) , async(req ,res)=>{  //passport.authenticate() is used to authonticate
     req.flash("success" , "Welcome to Wanderlust you are logged in!");
-    res.redirect("/listings");
+    let redirectUrl = res.locals.redirectUrl || "/listings";
+    res.redirect(redirectUrl);//redirect to the same page after login
 });
 
 
