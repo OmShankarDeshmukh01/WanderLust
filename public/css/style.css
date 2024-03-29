@@ -31,7 +31,6 @@
 .f-info-links a{ /* Styleing the footer links which are anchor tags  */
     text-decoration: none;
     color :#222222;
-    
 }
 .f-info-links a:hover{ /* creating hover effect in the footer links */
     text-decoration: underline;

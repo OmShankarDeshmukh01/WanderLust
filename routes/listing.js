@@ -36,12 +36,13 @@ router.get("/" , async(req ,res)=>{ //making index route "/listings"
  //Show route
  router.get("/:id" ,wrapAsync (async(req ,res)=>{ //used to show the data after clicking the anchor tag which is the title.
      let {id} =req.params; //extracting the id from the request paramaters
-     const listing = await Listing.findById(id).populate("reviews"); //searching the data on the basis of the id  //populate is used to print all the data in show.ejs of reviews
+     const listing = await Listing.findById(id).populate("reviews").populate("owner"); //searching the data on the basis of the id  //populate is used to print all the data in show.ejs of reviews
      //if listing doesnot exits then print this error and redirect to /listings
      if(!listing){
         req.flash("error" , "Listing you requested for does not exist !");
         res.redirect("/listings");
      }
+     console.log(listing);
      res.render("./listings/show.ejs" , {listing}); //rendering the "show.ejs" file and passing the {listing} value in the show.ejs file to see in the site.
  }));
  
@@ -56,6 +57,7 @@ router.get("/" , async(req ,res)=>{ //making index route "/listings"
      let listing = req.body.listing; //NEW SYNTAX to get the listing values when we define field of objects.
      const newListing = await new Listing(listing); //Adding the value which is inputted by user in the Listing database.
      req.flash("success" , "New Listing Created!");//flashing msg on success
+     newListing.owner = req.user._id;  //associated owner  with listing this means that on new account creation username will be asigned
      await newListing.save(); //saving the data permanently inside the database.
      res.redirect("/listings"); //redirecting the page to the index route to see the new addition in the site.
      // console.log(listing); //temp printing the value in the console to see what has to be printed.

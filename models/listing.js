@@ -1,6 +1,7 @@
 const mongoose = require("mongoose"); //require mongoose
 const Schema = mongoose.Schema;   //stored mongoose schema inside a constant variable so that we do not have to do it everytime
 const Review = require("./review.js");
+const User = require("./users.js");
 
 const listingSchema = new Schema({ //listing a Schema (basic way to assign operators)
     title : {
@@ -22,9 +23,13 @@ const listingSchema = new Schema({ //listing a Schema (basic way to assign opera
     reviews : [
         {
             type : Schema.Types.ObjectId, //object id of review
-            ref : "Review"
-        }
-    ]
+            ref : "Review",
+        },
+    ],
+    owner :{
+        type : Schema.Types.ObjectId,
+        ref : "User",
+    }
 });
 
 listingSchema .post("findOneAndDelete", async(listing)=>{

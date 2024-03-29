@@ -11,7 +11,7 @@ const flash = require("connect-flash");
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
 const User = require("./models/users.js");
-const port = 8080;  //defined a port //
+const port = 3030;  //defined a port //
 
 const listingRouter = require("./routes/listing.js");//required all the /listing routes from  routes folder and listing.js file
 const reviewRouter = require("./routes/review.js");//required all the reviews from review.js

@@ -17,6 +17,7 @@ async function main() {
 
 const initDB = async () =>{ //creating an async function to surf inside database data. 
   await Listing.deleteMany({}); //first we will empty all the data which was present earlier
+  initData2.data = initData2.data.map((obj)=>({...obj , owner:'6606aed66ac164ee7fe90259' }));//this will add a owner in all the listings
   await Listing.insertMany(initData2.data); //inserting all the data from the data.js file which is required in intiData variable
   console.log("data was initialized"); //to know that all the data in data.ejs have been initialized in the database we write this command to get our answer in console as a hint
 
